@@ -10,13 +10,13 @@ class TryOut
   def initialize(first_name, *middle_or_last_name)
     @first_name = first_name
     case middle_or_last_name.length
-    when 0
-      raise ArgumentError
     when 1
       @middle_name = nil
       @last_name = middle_or_last_name.first
     when 2
       @middle_name, @last_name = middle_or_last_name
+    else
+      raise ArgumentError
     end
   end
 
