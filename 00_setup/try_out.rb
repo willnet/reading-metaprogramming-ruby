@@ -7,17 +7,10 @@ class TryOut
   # upcase_full_name! メソッドを持つ。これは、upcase_full_nameの副作用を持つバージョンで、ファーストネーム、ミドルネーム、ラストネームをすべて大文字に変え、オブジェクトはその状態を記憶する
   attr_writer :first_name
 
-  def initialize(first_name, *middle_or_last_name)
+  def initialize(first_name, middle_name = nil, last_name)
     @first_name = first_name
-    case middle_or_last_name.length
-    when 1
-      @middle_name = nil
-      @last_name = middle_or_last_name.first
-    when 2
-      @middle_name, @last_name = middle_or_last_name
-    else
-      raise ArgumentError
-    end
+    @middle_name = middle_name
+    @last_name = last_name
   end
 
   def full_name
