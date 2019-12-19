@@ -39,18 +39,15 @@ end
 module OriginalAccessor
   def self.included(base)
     base.define_singleton_method(:my_attr_accessor) do |attr|
-      base.class_eval do
-        base.define_method attr do
-          @attr
-        end
+      base.define_method attr do
+        @attr
+      end
 
-        base.define_method "#{attr}=" do |value|
-          @attr = value
-          if value.is_a?(TrueClass) || value.is_a?(FalseClass)
-
-            define_singleton_method "#{attr}?" do
-              !!value
-            end
+      base.define_method "#{attr}=" do |value|
+        @attr = value
+        if value.is_a?(TrueClass) || value.is_a?(FalseClass)
+          define_singleton_method "#{attr}?" do
+            !!value
           end
         end
       end
