@@ -5,7 +5,23 @@ TryOver3 = Module.new
 # - `test_` から始まるインスタンスメソッドが実行された場合、このクラスは `run_test` メソッドを実行する
 # - `test_` メソッドがこのクラスに実装されていなくても `test_` から始まるメッセージに応答することができる
 # - TryOver3::A1 には `test_` から始まるインスタンスメソッドが定義されていない
+#
+class TryOver3::A1
+  def run_test
+  end
 
+  def method_missing(name, *args)
+    if name.to_s.start_with?('test_')
+      run_test
+    else
+      super
+    end
+  end
+
+  def respond_to_missing?(name)
+    name.to_s.start_with?('test_')
+  end
+end
 
 # Q2
 # 以下要件を満たす TryOver3::A2Proxy クラスを作成してください。
@@ -18,11 +34,25 @@ class TryOver3::A2
   end
 end
 
+class TryOver3::A2Proxy
+  def initialize(source)
+    @source = source
+  end
+
+  def method_missing(name, *args)
+    @source.send(name, *args)
+  end
+
+  def respond_to_missing?(name, include_all)
+    @source.respond_to?(name, include_all)
+  end
+end
 
 # Q3
 # 前回 OriginalAccessor の my_attr_accessor で定義した getter/setter に boolean の値が入っている場合には #{name}? が定義されるようなモジュールを実装しました。
 # 今回は、そのモジュールに boolean 以外が入っている場合には hoge? メソッドが存在しないようにする変更を加えてください。
 # （以下は god の模範解答を一部変更したものです。以下のコードに変更を加えてください）
+# メソッド生えちゃだめなのか…
 module TryOver3::OriginalAccessor2
   def self.included(mod)
     mod.define_singleton_method :my_attr_accessor do |attr_sym|
@@ -33,8 +63,14 @@ module TryOver3::OriginalAccessor2
       define_method "#{attr_sym}=" do |value|
         if [true, false].include?(value) && !respond_to?("#{attr_sym}?")
           self.class.define_method "#{attr_sym}?" do
-            @attr == true
+            if @attr.is_a?(TrueClass) || @attr.is_a?(FalseClass)
+              @attr == true
+            else
+              method_missing("#{attr_sym}?".to_sym)
+            end
           end
+        else
+          mod.remove_method "#{attr_sym}?" if respond_to? "#{attr_sym}?"
         end
         @attr = value
       end
@@ -48,7 +84,29 @@ end
 # TryOver3::A4.runners = [:Hoge]
 # TryOver3::A4::Hoge.run
 # # => "run Hoge"
+#
+# これ定数定義できちゃだめなの…？
+#
+class TryOver3::A4
+  def self.const_missing(const)
+    if @consts.include?(const)
+      Class.new { define_singleton_method(:run) { "run #{const}" } }
+    else
+      super
+    end
+  end
 
+  def self.runners=(consts)
+    @consts = consts
+  end
+=begin
+  def self.runners=(consts)
+    consts.each do |const|
+      const_set(const, Class.new { define_singleton_method(:run) { "run #{const}" } })
+    end
+  end
+=end
+end
 
 # Q5. チャレンジ問題！ 挑戦する方はテストの skip を外して挑戦してみてください。
 #
