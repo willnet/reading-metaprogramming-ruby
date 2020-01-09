@@ -99,13 +99,6 @@ class TryOver3::A4
   def self.runners=(consts)
     @consts = consts
   end
-=begin
-  def self.runners=(consts)
-    consts.each do |const|
-      const_set(const, Class.new { define_singleton_method(:run) { "run #{const}" } })
-    end
-  end
-=end
 end
 
 # Q5. チャレンジ問題！ 挑戦する方はテストの skip を外して挑戦してみてください。
