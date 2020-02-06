@@ -25,8 +25,8 @@
 class SimpleBot
   class << self
     def respond(keyword, &block)
-      @block = block
-      @keyword = keyword
+      @respond ||= {}
+      @respond[keyword] = block
     end
 
     def setting(key, value)
@@ -36,9 +36,8 @@ class SimpleBot
   end
 
   def ask(keyword)
-    if keyword == self.class.instance_variable_get(:@keyword)
-      instance_eval(&self.class.instance_variable_get(:@block))
-    end
+    block = self.class.instance_variable_get(:@respond)[keyword]
+    instance_eval(&block) if block
   end
 
   def settings
