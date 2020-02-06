@@ -117,12 +117,12 @@ module TryOver3::TaskHelper
       klass.define_singleton_method(:const_missing) do |const|
         super unless klass.respond_to?(const.downcase)
 
-        Class.new do
-          define_singleton_method :run do
-            warn "Warning: TryOver3::A5Task::#{const}.run is duplicated"
-            klass.send name
-          end
+        obj = Object.new
+        obj.define_singleton_method :run do
+          warn "Warning: TryOver3::A5Task::#{const}.run is duplicated"
+          klass.send name
         end
+        obj
       end
     end
   end
