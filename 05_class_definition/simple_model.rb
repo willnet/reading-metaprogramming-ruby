@@ -14,4 +14,57 @@
 # 3. 履歴がある場合、すべての操作履歴を放棄し、値も初期状態に戻す `restore!` メソッドを作成する
 
 module SimpleModel
+  def self.included(klass)
+    klass.extend(ClassMethods)
+  end
+
+  def initialize(args)
+    self._initial = args
+    args.each do |key, value|
+      instance_variable_set("@#{key}", value)
+    end
+  end
+
+  def restore!
+    self._histories = {}
+    _initial.each do |key, value|
+      instance_variable_set("@#{key}", value)
+    end
+  end
+
+  def changed?
+    !_histories.empty?
+  end
+
+  def _histories
+    @_histories ||= {}
+  end
+
+  def _histories=(value)
+    @_histories = value
+  end
+
+  def _initial
+    @_initial ||= {}
+  end
+
+  def _initial=(value)
+    @_initial = value
+  end
+
+  module ClassMethods
+    def attr_accessor(*syms)
+      syms.each { |sym| attr_reader sym }
+      syms.each do |sym|
+        define_method "#{sym}=" do |value|
+          (_histories[sym] ||= []).push(value)
+          instance_variable_set("@#{sym}", value)
+        end
+
+        define_method "#{sym}_changed?" do
+          !!_histories[sym]
+        end
+      end
+    end
+  end
 end
