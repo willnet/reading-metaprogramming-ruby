@@ -63,11 +63,7 @@ module TryOver3::OriginalAccessor2
       define_method "#{attr_sym}=" do |value|
         if [true, false].include?(value) && !respond_to?("#{attr_sym}?")
           self.class.define_method "#{attr_sym}?" do
-            if @attr.is_a?(TrueClass) || @attr.is_a?(FalseClass)
-              @attr == true
-            else
-              method_missing("#{attr_sym}?".to_sym)
-            end
+            @attr == true
           end
         else
           mod.remove_method "#{attr_sym}?" if respond_to? "#{attr_sym}?"
