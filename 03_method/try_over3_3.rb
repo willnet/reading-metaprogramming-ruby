@@ -86,7 +86,9 @@ end
 class TryOver3::A4
   def self.const_missing(const)
     if @consts.include?(const)
-      Class.new { define_singleton_method(:run) { "run #{const}" } }
+      obj = Object.new
+      obj.define_singleton_method(:run) { "run #{const}" }
+      obj
     else
       super
     end
