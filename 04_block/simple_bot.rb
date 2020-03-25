@@ -33,22 +33,22 @@ class SimpleBot
       @settings ||= {}
       @settings[key] = value
     end
+
+    def settings
+      obj = Object.new
+
+      @settings&.each do |key, value|
+        obj.define_singleton_method(key) do
+          value
+        end
+      end
+      obj
+    end
   end
 
   def ask(keyword)
     block = self.class.instance_variable_get(:@respond)[keyword]
-    instance_eval(&block) if block
-  end
-
-  def settings
-    obj = Object.new
-    hash = self.class.instance_variable_get(:@settings)
-    hash.each do |key, value|
-      obj.define_singleton_method(key) do
-        value
-      end
-    end
-    obj
+    block.call if block
   end
 end
 >>>>>>> solve simplebot
