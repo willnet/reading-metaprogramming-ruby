@@ -112,7 +112,7 @@ module TryOver3::TaskHelper
         block_return
       end
 
-      klass.define_singleton_method(:const_missing) do |const|
+      define_singleton_method(:const_missing) do |const|
         super unless klass.respond_to?(const.downcase)
 
         obj = Object.new
