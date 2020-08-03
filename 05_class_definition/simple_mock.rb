@@ -54,11 +54,14 @@ module SimpleMock
       @counter[name] += 1 if @counter&.key?(name)
       value
     end
+    @expects ||= []
+    @expects.push(name.to_sym)
   end
 
   def watch(name)
     (@counter ||= {})[name] = 0
 
+    return if @expects&.include?(name.to_sym)
     define_singleton_method(name) do
       @counter[name] += 1 if @counter&.key?(name)
     end
