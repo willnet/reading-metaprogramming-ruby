@@ -117,7 +117,7 @@ module TryOver3::TaskHelper
 
         obj = Object.new
         obj.define_singleton_method :run do
-          warn "Warning: TryOver3::A5Task::#{const}.run is duplicated"
+          warn "Warning: TryOver3::A5Task::#{const}.run is deprecated"
           klass.send name
         end
         obj
