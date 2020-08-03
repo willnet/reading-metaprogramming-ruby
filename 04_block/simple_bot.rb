@@ -51,4 +51,3 @@ class SimpleBot
     block.call if block
   end
 end
->>>>>>> solve simplebot
