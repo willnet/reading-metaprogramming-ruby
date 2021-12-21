@@ -79,14 +79,25 @@ end
 #   c4.increment # => "3"
 # - 定義済みのメソッド (value, value=) は private のままとなっている
 class C4
+  def initialize
+    self.value = 0
+  end
+
   def increment
-    @value ||= 0
+    # self.value #=> Error!
     self.value = value + 1
     value.to_s
   end
   private
 
-  attr_accessor :value
+  # attr_accessor :value
+  def value
+    @value
+  end
+
+  def value=(v)
+    @value = v
+  end
 end
 
 # Q5.

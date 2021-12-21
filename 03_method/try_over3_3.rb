@@ -52,7 +52,6 @@ end
 # 前回 OriginalAccessor の my_attr_accessor で定義した getter/setter に boolean の値が入っている場合には #{name}? が定義されるようなモジュールを実装しました。
 # 今回は、そのモジュールに boolean 以外が入っている場合には hoge? メソッドが存在しないようにする変更を加えてください。
 # （以下は god の模範解答を一部変更したものです。以下のコードに変更を加えてください）
-# メソッド生えちゃだめなのか…
 module TryOver3::OriginalAccessor2
   def self.included(mod)
     mod.define_singleton_method :my_attr_accessor do |attr_sym|
@@ -80,8 +79,6 @@ end
 # TryOver3::A4.runners = [:Hoge]
 # TryOver3::A4::Hoge.run
 # # => "run Hoge"
-#
-# これ定数定義できちゃだめなの…？
 #
 class TryOver3::A4
   def self.const_missing(const)
